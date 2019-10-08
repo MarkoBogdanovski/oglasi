@@ -51,6 +51,6 @@ class User extends Authenticatable
      */
     public function ads()
     {
-        return $this->hasMany('App\Models\Ads');
+        return $this->hasMany('App\Models\Ads', 'owner_id');
     }
 }
