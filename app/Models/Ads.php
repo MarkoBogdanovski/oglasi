@@ -9,7 +9,7 @@ class Ads extends Model
 	public $timestamps = false;
 
 	protected $fillable = [
-	        'owner_id', 'category', 'name', 'price', 'year', 'range', 'image', 'id'
+	        'owner_id', 'approved', 'category', 'name', 'price', 'year', 'range', 'image', 'id'
 	];
 
 	public function owner()

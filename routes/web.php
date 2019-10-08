@@ -12,3 +12,10 @@
 */
 
 Route::get('/', 'HomeController@index');
+
+Route::get('ads','TopicsController@create');
+Route::post('topic','TopicsController@store');
+Route::get('edit/{id}','TopicsController@edit');
+Route::post('edit/{id}','TopicsController@update');
+Route::delete('{id}','TopicsController@destroy');
+

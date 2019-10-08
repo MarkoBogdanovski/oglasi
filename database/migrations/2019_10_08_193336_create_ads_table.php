@@ -16,7 +16,7 @@ class CreateAdsTable extends Migration
         Schema::create('ads', function (Blueprint $table) {
             $table->increments('id')->unique();
             $table->unsignedInteger('owner_id');
-            $table->boolean('approved');
+            $table->boolean('approved')->default(false);
             $table->integer('category');
             $table->string('name');
             $table->float('price');

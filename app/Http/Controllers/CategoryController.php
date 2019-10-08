@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\category;
 use Illuminate\Http\Request;
-use App\Models\User;
 
-class HomeController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +14,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $data = User::with(['role', 'ads'])->take(2)->get();
-        return $data;   
+        //
     }
 
     /**
@@ -42,10 +41,10 @@ class HomeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Ads  $ads
+     * @param  \App\category  $category
      * @return \Illuminate\Http\Response
      */
-    public function show(Ads $ads)
+    public function show(category $category)
     {
         //
     }
@@ -53,10 +52,10 @@ class HomeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Ads  $ads
+     * @param  \App\category  $category
      * @return \Illuminate\Http\Response
      */
-    public function edit(Ads $ads)
+    public function edit(category $category)
     {
         //
     }
@@ -65,10 +64,10 @@ class HomeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Ads  $ads
+     * @param  \App\category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ads $ads)
+    public function update(Request $request, category $category)
     {
         //
     }
@@ -76,10 +75,10 @@ class HomeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Ads  $ads
+     * @param  \App\category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Ads $ads)
+    public function destroy(category $category)
     {
         //
     }
