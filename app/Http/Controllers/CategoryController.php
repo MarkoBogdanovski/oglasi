@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\category;
+use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -12,9 +13,23 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function __construct()
     {
-        //
+        $this->middleware('auth');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $data = [];
+        $data = Category::all();
+
+        return response()->json($data);
     }
 
     /**
@@ -24,7 +39,11 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        if(Auth::user()->role_id > 1) { 
+            return redirect('home');
+        }
+        
+        return view('category');
     }
 
     /**
@@ -35,51 +54,34 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if(empty($request->get('name'))){
+            return redirect('category')->with('error', 'Enter valid name!');
+        }
+
+        $slug = $this->createSlug($request->get('name'));
+        try {        
+            $id = Category::insertGetId([
+                'name' => $slug, 'display_name' => trim($request->get('name'))
+            ]);
+
+            return redirect('category')->with('success', "Category has been successfully crated on the <a class='alert-link' target='_blank' href='/{$id}/{$slug}'>link</a>.");
+        } catch (\Exception $e){
+            return redirect('category')->with('error', 'Insert failed!');
+        }
     }
 
     /**
-     * Display the specified resource.
+     * Filter out whitespace and space, create slug 
      *
-     * @param  \App\category  $category
-     * @return \Illuminate\Http\Response
+     * @param  string @string
      */
-    public function show(category $category)
-    {
-        //
-    }
+    private function createSlug($rawInput) 
+    {   
+        $output = '';
+        $output = preg_replace('/\s+/', ' ', $output);
+        $output = trim(strtolower($rawInput));
+        $output = str_replace(' ', '-', $output);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(category $category)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, category $category)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(category $category)
-    {
-        //
+        return $output;
     }
 }
