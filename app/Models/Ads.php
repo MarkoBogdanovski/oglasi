@@ -16,4 +16,9 @@ class Ads extends Model
 	{
 	    return $this->belongsTo(User::class, 'owner_id');	
 	}
+
+	public function category()
+	{
+	        return $this->hasMany(Category::class, 'id', 'category');
+	}
 }

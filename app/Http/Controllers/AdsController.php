@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Ads;
+use Storage;
 
 class AdsController extends Controller
 
@@ -54,8 +55,12 @@ class AdsController extends Controller
     public function store(Request $request)
     {
         if(Auth::user()->role_id < 2) { 
-            dd(Auth::user()->role_id);
-           //return redirect('home');
+            return redirect('home');
+        }
+
+        $path = $this->uploadImage($request);
+        if(!$path) {
+            return  redirect('ad')->with('error', 'Error while uploading image');
         }
 
         try {        
@@ -67,7 +72,7 @@ class AdsController extends Controller
                 'price' => $request->get('price'),
                 'year' => $request->get('year'),
                 'range' => $request->get('range'),
-                'image' => $request->get('range')
+                'image' => $path
             ]);
 
             return redirect('ad')->with('success', "Ad has been successfully crated on the <a class='alert-link' target='_blank' href='{$id}/{$request->get('name')}'>link</a>.");
@@ -85,5 +90,20 @@ class AdsController extends Controller
     public function show(Ads $ads)
     {
         //
+    }
+
+    private function uploadImage(Request $request) {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+  
+        try {
+            $imageName = time().'.'.$request->image->extension();  
+            $request->image->move(storage_path('app/public/cars'), $imageName);
+
+            return $imageName; 
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

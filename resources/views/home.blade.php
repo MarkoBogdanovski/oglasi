@@ -2,34 +2,46 @@
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
-                          @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+    @if (session('status'))
+      <div class="alert alert-success" role="alert">
+        {{ session('status') }}
+      </div>
+    @endif
 
-        @if (!is_array($data)) 
-          {{ $data }}
-        @else if
-          @foreach($data as $topic)
-              <div class="col-md-6">
-                            <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                              <div class="col p-4 d-flex flex-column position-static">
-                                <strong class="d-inline-block mb-2 text-primary">World</strong>
-                                <h3 class="mb-0">Featured post</h3>
-                                <div class="mb-1 text-muted">Nov 12</div>
-                                <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-                                <a href="#" class="stretched-link">Continue reading</a>
-                              </div>
-                              <div class="col-auto d-none d-lg-block">
-                                <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-                              </div>
-                            </div>
-              </div>
-          </div>
+
+    <div class="card">
+          @foreach($ads as $ad)
+          <article class="itemlist">
+              <div class="row row-sm">
+                <aside class="col-sm-3">
+                  <div class="img-wrap p-2"><img src="{{ Storage::url('cars/'.$ad->image) }}" class="img-thumbnail rounded border-0" /></div>
+                </aside> <!-- col.// -->
+                <div class="col-sm-6 pl-0">
+                  <div class="text-wrap p-4">
+                    <h4 class="title"> {{ $ad->name }}  </h4>
+                    <p> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, Lorem ipsum dolor sit amet, consectetuer adipiscing elit, Ut wisi enim ad minim veniam </p>
+                    <p class="rating-wrap my-0 text-muted">
+                      <span class="label-rating">132 reviews</span>
+                      <span class="label-rating">154 orders </span>
+                    </p> <!-- rating-wrap.// -->
+                  </div> <!-- text-wrap.// -->
+                </div> <!-- col.// -->
+                <aside class="col-sm-3">
+                  <div class="border-left p-3">
+                    <div class="price-wrap">
+                      <span class="h3 price"> {{ $ad->price }} </span><!--<del class="price-old"> $98</del>-->
+                    </div> <!-- info-price-detail // -->
+                    <p class="text-success">Free shipping</p>
+                    <p> 
+                    <a href="{{ $ad->id }}/{{ $ad->name }}" class="btn btn-primary stretched-link">Details</a>
+                    <a href="#" class="btn btn-light disabled"> Buy now  </a> 
+                  </p>
+                  </div> <!-- action-wrap.// -->
+                </aside> <!-- col.// -->
+              </div> <!-- row.// -->
+            </article> <!-- itemlist.// -->
+
         @endforeach
-      @endif
     </div>
 </div>
 @endsection

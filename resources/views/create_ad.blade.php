@@ -26,7 +26,7 @@
                 <div class="card-header">New Advertisment</div>
 
                 <div class="card-body">
-                    <form method="post" action="{{url('ad')}}" class="needs-validation" novalidate>
+                    <form method="post" action="{{url('ad')}}" class="needs-validation" enctype="multipart/form-data" novalidate>
                         @csrf
 
                                 <div class="form-group">

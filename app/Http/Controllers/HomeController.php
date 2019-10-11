@@ -14,9 +14,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-         $data = Ads::with(['owner'])->take(10)->get();
+        $ads = Ads::with(['owner'])->take(10)->get();
          
-        return view('home', compact('data'));
+        return view('home', compact('ads'));
     }
 
     
@@ -28,8 +28,13 @@ class HomeController extends Controller
      */
     public function show(Ads $ads, $id)
     {   
-        $data = Ads::find($id);
-    
-        return view('home', compact('data'));
+        $ad = Ads::with(['category', 'owner'])->where([
+            ['id', $id],
+            ['approved', false]
+        ])->first()->toArray();
+
+        return view('ad')->with([
+            'ad' => $ad,
+        ]);
     }
 }
