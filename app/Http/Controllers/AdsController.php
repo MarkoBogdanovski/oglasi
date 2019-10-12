@@ -25,11 +25,28 @@ class AdsController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index($list = null)
     {
-         $data = Ads::take(10)->get();
-         
-        return view('home', compact('data'));
+        if(isset($list) && !empty($list) && $list == "all") {
+            $onHold = Ads::with(['category', 'owner'])
+            ->where([
+                ['approved', false],
+                ['updated_at', null],
+            ])
+            ->get()->toArray();
+
+            return view('ads', compact('onHold', 'list'));
+        } else {
+            $onHold = Ads::with(['category', 'owner'])
+            ->where([
+                ['approved', false],
+                ['updated_at', null],
+            ])
+            ->take(4)->get()->toArray();
+            $approved = Ads::with(['category', 'owner'])->where('approved', true)->get()->toArray();
+
+            return view('ads', compact('onHold', 'approved', 'list'));
+        }
     }
 
     /**
@@ -54,13 +71,13 @@ class AdsController extends Controller
      */
     public function store(Request $request)
     {
-        if(Auth::user()->role_id < 2) { 
-            return redirect('home');
+        if(Auth::user()->role_id == 1) { 
+            return redirect('home')->with('status', 'No permission');
         }
 
         $path = $this->uploadImage($request);
         if(!$path) {
-            return  redirect('ad')->with('error', 'Error while uploading image');
+            return  redirect('ad')->with('status', 'Error while uploading image');
         }
 
         try {        
@@ -75,21 +92,66 @@ class AdsController extends Controller
                 'image' => $path
             ]);
 
-            return redirect('ad')->with('success', "Ad has been successfully crated on the <a class='alert-link' target='_blank' href='{$id}/{$request->get('name')}'>link</a>.");
+            return redirect('ad')->with('status', "Ad has been successfully crated on the <a class='alert-link' target='_blank' href='{$id}/{$request->get('name')}'>link</a>.");
         } catch (\Exception $e){
-            return redirect('ad')->with('error', $e->getMessage());
+            return redirect('ad')->with('status', $e->getMessage());
         }
     }
 
     /**
-     * Display the specified resource.
+     * Update the specified resource.
      *
      * @param  \App\Ads  $ads
      * @return \Illuminate\Http\Response
      */
-    public function show(Ads $ads)
+    public function update($id, $status)
     {
-        //
+        if(Auth::user()->role_id != 1) { 
+            return redirect('home');
+        }
+
+        if($status == 'approve') {
+            $status = true;
+        } else if($status == 'ignore') {
+            $status = false;
+        } else {
+            return redirect('ads')->with('status', ['Error', 'Invalid argument!']);
+        }
+
+        $ad = Ads::find($id);
+        $ad->approved = $status;
+        $ad->updated_at = now();
+        $ad->save();
+
+        return redirect('ads')->with('status', ['Success','Ad has been handled.']);
+    }
+
+ /**
+     * Update the specified resource.
+     *
+     * @param  \App\Ads  $ads
+     * @return \Illuminate\Http\Response
+     */
+    public function handle(Request $request)
+    {
+        if(Auth::user()->role_id != 1) { 
+            return redirect('home');
+        }
+
+        $ids = $request->get('ids');
+        $status = $request->get('status');
+
+        if($status == true) {
+            $status = true;
+            $ads = Ads::whereIn('id', $ids)->update(['approved' => $status, 'updated_at' => now()]);
+        } else if($status == false) {
+            $status = false;
+            $ads = Ads::whereIn('id', $ids)->update(['approved' => $status, 'updated_at' => now()]);
+        } else {
+            return response()->json(['Invalid argument!']);
+        }
+
+        return response()->json(['Ad has been handled.']);
     }
 
     private function uploadImage(Request $request) {
@@ -100,8 +162,9 @@ class AdsController extends Controller
         try {
             $imageName = time().'.'.$request->image->extension();  
             $request->image->move(storage_path('app/public/cars'), $imageName);
+            $path = Storage::url('cars/'.$imageName); 
 
-            return $imageName; 
+            return $path;
         } catch (\Exception $e) {
             return false;
         }

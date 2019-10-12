@@ -14,7 +14,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $ads = Ads::with(['owner'])->take(10)->get();
+        $ads = [];
+        $ads = Ads::with(['category', 'owner'])->where('approved', true)->paginate(10);
          
         return view('home', compact('ads'));
     }
@@ -28,9 +29,10 @@ class HomeController extends Controller
      */
     public function show(Ads $ads, $id)
     {   
+        $ad = [];
         $ad = Ads::with(['category', 'owner'])->where([
             ['id', $id],
-            ['approved', false]
+            ['approved', true]
         ])->first()->toArray();
 
         return view('ad')->with([

@@ -163,6 +163,3 @@ form.was-validated select:valid ~ .select2-container--bootstrap4 .select2-select
     background-color: #343a40; }
 
 
-.list-group-item.active {
-  background-color: #007bff;
-}

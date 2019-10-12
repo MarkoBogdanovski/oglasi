@@ -14,6 +14,7 @@ $factory->define(Ads::class, function (Faker $faker) {
     	'price' => $faker->randomNumber(4),
     	'year' => $faker->randomNumber(4),
     	'range' => $faker->randomNumber(4),
-    	'image' => '1570726842.jpeg'
+        'created_at' => now(),
+    	'image' => 'https://lorempixel.com/800/600/?'.time()
     ];
 });

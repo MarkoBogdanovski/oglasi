@@ -21,7 +21,7 @@
 
         <div class="col-lg-8">
           <div class="card mt-4">
-            <img class="card-img-top img-fluid" src="{{ Storage::url('cars/'.$ad['image']) }}" alt="">
+            <img class="card-img-top img-fluid" src="{{ $ad['image'] }}" alt="">
             <div class="card-body">
               <h3 class="card-title">{{ $ad['name'] }}</h3>
               <h4>${{ $ad['price'] }}</h4>
