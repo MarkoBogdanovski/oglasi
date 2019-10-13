@@ -15,9 +15,26 @@ class HomeController extends Controller
     public function index()
     {
         $ads = [];
-        $ads = Ads::with(['category', 'owner'])->where('approved', true)->paginate(10);
+        $ads = Ads::with(['category', 'owner'])->where('approved', true)->latest('created_at')->paginate(9);
          
         return view('home', compact('ads'));
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function search(Request $request)
+    {
+        $ads = [];
+        $ads = Ads::with(['category', 'owner'])->where([
+            ['name', 'LIKE', '%'.$request->get('q').'%'],
+            ['category', $request->get('category')],
+            ['approved', true]
+        ])->latest()->paginate(9);
+
+        return response()->json($ads);
     }
 
     

@@ -8,14 +8,19 @@
       </div>
     @endif
 
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/ads"><i class="fas fa-arrow-left"></i> &nbsp;Go Back</a></li>
+    </ol>
+  </nav>
 
     <div class="row">
        <div class="col-lg-4">
             <ul class="list-group mt-4 mr-5">
-              <li class="list-group-item">{{ $ad['owner']['name'] }}</li>
-              <li class="list-group-item">{{ $ad['category'][0]['display_name'] }}</li>
-              <li class="list-group-item">{{ $ad['year'] }}</li>
-              <li class="list-group-item">{{ $ad['range'] }}</li>
+              <li class="list-group-item"><b>Owner:</b> {{ $ad['owner']['name'] }}</li>
+              <li class="list-group-item"><b>Category:</b> {{ $ad['category'][0]['display_name'] }}</li>
+              <li class="list-group-item"><b>Year:</b> {{ $ad['year'] }}</li>
+              <li class="list-group-item"><b>Range:</b> {{ $ad['range'] }}</li>
             </ul>
         </div>
 

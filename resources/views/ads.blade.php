@@ -9,7 +9,6 @@
                       <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
                       <strong class="mr-auto">{{ session('status')[0] }}</strong>
                       &nbsp;&nbsp;&nbsp;
-                      <small>11 mins ago</small>
                       <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
@@ -35,7 +34,7 @@
                       <a  href="/ad/{{$ad['id']}}/approve" class="btn btn-sm btn-outline-success">Approve</a>
                       <a  href="/ad/{{$ad['id']}}/ignore" class="btn btn-sm btn-outline-danger">Ignore</a>
                     </div>
-                    <small class="text-muted"><td>{{  strftime("%d %b %Y",strtotime($ad->created_at)) }}</td></small>
+                    <small class="text-muted"><td>{{  strftime("%d %b %Y",strtotime($ad['created_at'])) }}</td></small>
                   </div>
                 </div>
               </div>
@@ -95,10 +94,10 @@
         @endif
 
     @else 
-         <div class="container-fluid">
+        <div class="container-fluid">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/ads">Go Back</a></li>
+                <li class="breadcrumb-item"><a href="/ads"><i class="fas fa-arrow-left"></i> &nbsp;Go Back</a></li>
               </ol>
             </nav>
 

@@ -35,6 +35,16 @@
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
+
+                <form class="form-inline" method="POST">
+                    <div class="input-group ml-5">
+                        <input type="text" aria-label="Search" id="search" placeholder="Search" name="search" class="form-control @if (session('error')) is-invalid @endif" style="width: 20rem" required />
+                        <div class="input-group-append" style="width: 15rem">
+                            <select class="custom-select"  id="category" name="category" data-allow-clear="1" required></select>
+                        </div>
+                    </div>
+                </form>
+
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
