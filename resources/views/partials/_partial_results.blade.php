@@ -1,16 +1,5 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="container justify-content-center">
-    @if (session('status'))
-      <div class="alert alert-success" role="alert">
-        {{ session('status') }}
-      </div>
-    @endif
-
-        <div class="d-flex flex-row flex-wrap justify-content-center" id="ads">
             @foreach($ads as $ad)
-              <div class="card m-2 shadow-sm mb-5 ml-3 mr-3">
+              <div class="card m-2 shadow-sm mb-5" style="max-width: 20rem;">
                 <div class="card-img-top" style="max-height: 15rem; position: relative;overflow: hidden;">
                   <img src="{{ $ad['image'] }}" class="img-fluid"/>
                 </div>
@@ -26,7 +15,4 @@
                 </div>
               </div>
             @endforeach
-            {{ $ads->links() }}
-        </div>
-</div>
-@endsection
+           {!! $ads->links() !!}

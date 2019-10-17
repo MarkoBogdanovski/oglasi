@@ -25,7 +25,9 @@
             @foreach($onHold as $ad)
             <div class="flex-fill">
               <div class="card m-2 shadow-sm">
-                <img src="{{ $ad['image'] }}" class="card-img-top"/>
+                <div class="card-img-top" style="max-height: 15rem; position: relative;overflow: hidden;">
+                  <img src="{{ $ad['image'] }}" class="img-fluid"/>
+                </div>
                 <div class="card-body">
                 <h5 class="card-title">{{$ad['price']}}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{$ad['category'][0]['display_name']}}</h6>

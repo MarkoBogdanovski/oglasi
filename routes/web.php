@@ -17,6 +17,7 @@ Route::get('/', function() {
 });
 
 Route::get('home', 'HomeController@index')->name('home');
+Route::get('search', 'HomeController@search');
 Route::post('search', 'HomeController@search');
 Route::get('{id}/{name}', 'HomeController@show')->where(['id' => '[0-9]+']);
 
@@ -30,6 +31,6 @@ Route::get('ad','AdsController@create');
 Route::post('ad','AdsController@store');
 Route::delete('ad','AdsController@destroy');
 
-Route::get('categories','CategoryController@index');
+Route::get('categories','HomeController@listCategories');
 Route::get('category','CategoryController@create')->name('category');
 Route::post('category','CategoryController@store');

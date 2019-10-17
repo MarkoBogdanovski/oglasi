@@ -19,7 +19,7 @@ class CreateAdsTable extends Migration
             $table->boolean('approved')->default(false);
             $table->integer('category');
             $table->string('name');
-            $table->float('price');
+            $table->decimal('price', 12, 2);
             $table->integer('year');
             $table->float('range');
             $table->string('image');

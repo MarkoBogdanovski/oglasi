@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Ads;
+use App\Models\Category;
+use Input;
 
 class HomeController extends Controller
 {
@@ -28,13 +30,32 @@ class HomeController extends Controller
     public function search(Request $request)
     {
         $ads = [];
-        $ads = Ads::with(['category', 'owner'])->where([
-            ['name', 'LIKE', '%'.$request->get('q').'%'],
-            ['category', $request->get('category')],
-            ['approved', true]
-        ])->latest()->paginate(9);
+        $category = !empty($request->get('category')) ? $request->get('category') : null;
 
-        return response()->json($ads);
+        if(!empty($request->get('category'))) {
+            $ads = Ads::with(['category', 'owner'])->where([
+                ['name', 'LIKE', '%'.$request->get('q').'%'],
+                ['category', $request->get('category')],
+                ['approved', true]
+            ])->latest()->paginate(9);
+
+        } else {
+            $ads = Ads::with(['category', 'owner'])->where([
+                ['name', 'LIKE', '%'.$request->get('q').'%'],
+                ['approved', true]
+            ])->latest()->paginate(9);
+        }
+
+        if ($request->ajax()) {
+            return view('partials._partial_results')->with([
+                'ads' => $ads->appends($request->except('_token')),
+                'request' => $request,
+            ]);
+        }
+
+        return view('home')->with([
+            'ads' => $ads,
+        ]);
     }
 
     
@@ -50,10 +71,25 @@ class HomeController extends Controller
         $ad = Ads::with(['category', 'owner'])->where([
             ['id', $id],
             ['approved', true]
-        ])->first()->toArray();
+        ])->first();
 
         return view('ad')->with([
             'ad' => $ad,
         ]);
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function listCategories(Request $request)
+    {
+        $data = [];
+        $data = Category::all();
+
+        return response()->json($data);
     }
 }

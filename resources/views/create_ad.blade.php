@@ -2,25 +2,25 @@
 
 @section('content')
 <div class="container">
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {!! session('success') !!}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
+    @if (session('success'))
+      <div class="alert alert-success" role="alert">
+        {!! session('success') !!}
+      </div>
+    @endif
         
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
+    @if (session('error'))
+      <div class="alert alert-danger" role="alert">
+        {{ session('error') }}
+      </div>
+    @endif
 
     <div class="row justify-content-center">
+        <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/ads"><i class="fas fa-arrow-left"></i> &nbsp;Go Back</a></li>
+              </ol>
+        </nav>
+
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">New Advertisment</div>
@@ -44,7 +44,7 @@
                                       <div class="input-group-prepend">
                                           <span class="input-group-text">Category</span>
                                       </div>
-                                      <select class="custom-select"   name="category" data-allow-clear="1" required></select>
+                                      <select class="custom-select"   name="category" id="category" data-allow-clear="1" required></select>
                                   </div>
                                 </div>
 
@@ -107,7 +107,7 @@
 </div>
 
 <script type="text/javascript">
-  $(".custom-select").select2({
+  $("#category").select2({
     placeholder: "Select category",
     theme: 'bootstrap4',
     ajax: {

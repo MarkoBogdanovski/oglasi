@@ -26,10 +26,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $data = [];
-        $data = Category::all();
-
-        return response()->json($data);
+        //
     }
 
     /**
@@ -64,7 +61,7 @@ class CategoryController extends Controller
                 'name' => $slug, 'display_name' => trim($request->get('name'))
             ]);
 
-            return redirect('category')->with('success', "Category has been successfully crated on the <a class='alert-link' target='_blank' href='/{$id}/{$slug}'>link</a>.");
+            return redirect('category')->with('success', "Category has been successfully crated on the <a class='alert-link' target='_blank' href='/search?category={$id}'>link</a>.");
         } catch (\Exception $e){
             return redirect('category')->with('error', 'Insert failed!');
         }

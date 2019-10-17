@@ -36,11 +36,11 @@
                     {{ config('app.name', 'Laravel') }}
                 </a>
 
-                <form class="form-inline" method="POST">
+                <form class="form-inline" method="GET" action='{{ url("search") }}'>
                     <div class="input-group ml-5">
-                        <input type="text" aria-label="Search" id="search" placeholder="Search" name="search" class="form-control @if (session('error')) is-invalid @endif" style="width: 20rem" required />
+                        <input type="text" aria-label="Search"  id="search" placeholder="Search" name="q" class="form-control" style="width: 20rem" required />
                         <div class="input-group-append" style="width: 15rem">
-                            <select class="custom-select"  id="category" name="category" data-allow-clear="1" required></select>
+                            <select class="custom-select"  id="categorySearch" name="category" data-allow-clear="1"></select>
                         </div>
                     </div>
                 </form>
@@ -100,5 +100,45 @@
             @yield('content')
         </main>
     </div>
+    <script type="text/javascript">
+          $("#categorySearch").select2({
+            placeholder: "Select category",
+            theme: 'bootstrap4',
+            ajax: {
+              url: "/categories",
+              dataType: "json",
+              processResults: function(data) {
+                return {
+                  results: $.map(data, function(category) {
+                    return {
+                      text: category.display_name,
+                      id: category.id
+                    };
+                  })
+                };
+              },
+              cache: true
+            }
+          });
+
+            $("#categorySearch").on('change', function() {
+                var q = $("#search").val();
+                var category = $("#categorySearch").val();
+
+                $.ajax({
+                    url: '/search',
+                    type: 'post',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        category: category,
+                        q: q
+                    },
+                    dataType: 'html',
+                    success: function(response){
+                        $("#ads").empty().html(response);
+                    }
+                });
+            });
+    </script>
 </body>
 </html>

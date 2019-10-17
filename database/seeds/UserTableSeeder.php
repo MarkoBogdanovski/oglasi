@@ -20,7 +20,7 @@ class UserTableSeeder extends Seeder
             'role_id' => 1
         ]);
         $user = User::create([
-	    'id'=> 2,
+	       'id'=> 2,
             'name' => 'Demo',
             'email' => 'demo@demo.com',
             'password' => bcrypt('demo'),

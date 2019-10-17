@@ -5,11 +5,35 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Ads;
+use App\Models\Category;
 use Storage;
+use Validator;
+use Session;
 
 class AdsController extends Controller
-
 { 
+    /**
+     *  Disabled category
+     */
+    private $disabledCategory = 1;
+
+   /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => 'required|string|max:255',
+            'category' => 'required|integer|max:255',
+            'year' => 'required|integer',
+            'range' => 'required|integer',
+            'price' => 'required|integer',
+        ]);
+    }
+
     /**
      * Create a new controller instance.
      *
@@ -17,6 +41,11 @@ class AdsController extends Controller
      */
     public function __construct()
     {
+        $category = Category::where('name', 'audi')->first()->pluck('id');
+        if($this->disabledCategory != $category[0]){
+            $this->disabledCategory = $category;
+        }
+        
         $this->middleware('auth');
     }
 
@@ -27,13 +56,16 @@ class AdsController extends Controller
      */
     public function index($list = null)
     {
+        if(Auth::user()->role_id != 1) { 
+            return redirect('home');
+        }
+
         if(isset($list) && !empty($list) && $list == "all") {
             $onHold = Ads::with(['category', 'owner'])
             ->where([
                 ['approved', false],
                 ['updated_at', null],
-            ])
-            ->get()->toArray();
+            ])->latest('created_at')->get()->toArray();
 
             return view('ads', compact('onHold', 'list'));
         } else {
@@ -41,8 +73,8 @@ class AdsController extends Controller
             ->where([
                 ['approved', false],
                 ['updated_at', null],
-            ])
-            ->take(4)->get()->toArray();
+            ])->latest('created_at')->take(4)->get()->toArray();
+
             $approved = Ads::with(['category', 'owner'])->where('approved', true)->get()->toArray();
 
             return view('ads', compact('onHold', 'approved', 'list'));
@@ -75,9 +107,18 @@ class AdsController extends Controller
             return redirect('home')->with('status', 'No permission');
         }
 
+        $validator = $this->validator($request->all());        
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', $validator->messages()->first());
+        }
+
+        if($request->get('category') == $this->disabledCategory) {
+            return  redirect('ad')->with('error', 'This category is restricted!');
+        }
+
         $path = $this->uploadImage($request);
         if(!$path) {
-            return  redirect('ad')->with('status', 'Error while uploading image');
+            return redirect()->back()->with('error',  'Error while uploading image');
         }
 
         try {        
@@ -89,12 +130,13 @@ class AdsController extends Controller
                 'price' => $request->get('price'),
                 'year' => $request->get('year'),
                 'range' => $request->get('range'),
-                'image' => $path
+                'image' => $path,
+                'created_at' => now()
             ]);
 
-            return redirect('ad')->with('status', "Ad has been successfully crated on the <a class='alert-link' target='_blank' href='{$id}/{$request->get('name')}'>link</a>.");
+            return redirect('ad')->with('success', "Ad has been successfully crated on the <a class='alert-link' target='_blank' href='{$id}/{$request->get('name')}'>link</a>.");
         } catch (\Exception $e){
-            return redirect('ad')->with('status', $e->getMessage());
+            return redirect('ad')->with('error', $e->getMessage());
         }
     }
 
@@ -166,7 +208,7 @@ class AdsController extends Controller
 
             return $path;
         } catch (\Exception $e) {
-            return false;
+            return redirect()->back()->with('error',  'Error while uploading image');
         }
     }
 }

@@ -37,13 +37,12 @@
                 </div>
             </div>
         @endif
+    <div class="row justify-content-center">
         <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/ads"><i class="fas fa-arrow-left"></i> &nbsp;Go Back</a></li>
               </ol>
         </nav>
-
-    <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">New Category</div>

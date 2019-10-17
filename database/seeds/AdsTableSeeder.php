@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\Ads;
+use App\Models\Category;
 
 class AdsTableSeeder extends Seeder
 {
@@ -11,8 +13,14 @@ class AdsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Models\Ads::class, 100)->create()->each(function ($ad) {
-            return true;
-        });
+        $categories = Category::all()->pluck('id');
+        foreach($categories as $key => $value) {
+            factory(Ads::class, 50)->create([
+                'category' => $value
+            ])->each(function ($ad) {
+                return true;
+            });
+        }
+        
     }
 }
