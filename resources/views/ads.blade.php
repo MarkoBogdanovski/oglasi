@@ -65,7 +65,7 @@
                     sortable: true
                 }, {
                     title: 'Details',
-                    colspan: 3,
+                    colspan: 4,
                     align: 'center'
                 }], [{
                     field: 'name',
@@ -80,6 +80,12 @@
                 }, {
                     field: 'category',
                     title: 'Category',
+                    align: 'center',
+                    sortable: true,
+                    align: 'center'
+                }, {
+                    field: 'status',
+                    title: 'Status',
                     align: 'center',
                     sortable: true,
                     align: 'center'
@@ -183,56 +189,58 @@
                 @endif
 
                 @if (!empty($approved))
-                    <div class="card ml-2 mr-2 mt-5 p-4 shadow-sm">
-                        <div id="toolbar">
-                            <div class="btn-group">
-                                <button type="button" id="approve"  class="btn btn-outline-success">
-                                    <b style="font-weight: 600;">Approve</b>&nbsp;&nbsp;<i class="fas fa-check"></i>
-                                </button>
+                    <div class="card ml-2 mr-2 mt-5 shadow-sm">
+                        <div class="card-header"><b>Approved advertisments</b></div>
+                        <div class="card-body">
+                            <div id="toolbar">
                                 <button type="button"  id="remove" class="btn btn-outline-danger">
                                     <b style="font-weight: 600;">Reject</b>&nbsp;&nbsp;<i class="far fa-trash-alt"></i>
                                 </button>
                             </div>
-                        </div>
 
-                        <table  id="table"
-                                  data-toggle="table"  
-                                  data-toolbar="#toolbar"
-                                  data-search="true"
-                                  data-show-refresh="true"
-                                  data-show-fullscreen="true"
-                                  data-click-to-select="true"
-                                  data-minimum-count-columns="2"
-                                  data-pagination="true"
-                                  data-id-field="id"
-                                  data-show-footer="true"
-                                  data-pagination="true"
-                                  data-search="true"
-                                  data-response-handler="responseHandler">
-                            <thead>
-                                <tr>
-                                    <th rowspan="2"></th>
-                                    <th rowspan="2">Id</th>
-                                    <th colspan="4">Details</th>
-                                </tr>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Price</th>
-                                    <th>Category</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($approved as $ad)
+                            <table  id="table"
+                                      data-toggle="table"  
+                                      data-toolbar="#toolbar"
+                                      data-show-refresh="true"
+                                      data-show-fullscreen="true"
+                                      data-click-to-select="true"
+                                      data-minimum-count-columns="2"
+                                      data-pagination="true"
+                                      data-id-field="id"
+                                      data-pagination="true"
+                                      data-search="true"
+                                      data-response-handler="responseHandler">
+                                <thead>
                                     <tr>
-                                        <td></td>
-                                        <td>{{ $ad['id'] }}</td>
-                                        <td>{{ $ad['name']}}</td>
-                                        <td>{{ $ad['price'] }}</td> 
-                                        <td>{{ $ad['category'][0]['display_name'] }}</td>
+                                        <th rowspan="2"></th>
+                                        <th rowspan="2">Id</th>
+                                        <th colspan="4">Details</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Category</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($approved as $ad)
+                                        <tr>
+                                            <td></td>
+                                            <td>{{ $ad->id }}</td>
+                                            <td>{{ $ad->name }}</td>
+                                            <td>{{ $ad->price }}</td> 
+                                            <td>{{ $ad->category()->first()->display_name }}</td>
+                                            @if (empty($ad->updated_at))
+                                                <td><b class="text-secondary">Recent</b></td>
+                                            @else
+                                                <td><b class="text-secondary">Republish</b></td>
+                                            @endif
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 @endif
             </div>
@@ -267,14 +275,12 @@
                         <table  id="table"
                                   data-toggle="table"  
                                   data-toolbar="#toolbar"
-                                  data-search="true"
                                   data-show-refresh="true"
                                   data-show-fullscreen="true"
                                   data-click-to-select="true"
                                   data-minimum-count-columns="2"
                                   data-pagination="true"
                                   data-id-field="id"
-                                  data-show-footer="true"
                                   data-pagination="true"
                                   data-search="true"
                                   data-response-handler="responseHandler">
@@ -288,16 +294,22 @@
                                     <th>Name</th>
                                     <th>Price</th>
                                     <th>Category</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($onHold as $ad)
                                     <tr>
                                         <td></td>
-                                        <td>{{ $ad['id'] }}</td>
-                                        <td>{{ $ad['name']}}</td>
-                                        <td>{{ $ad['price'] }}</td> 
-                                        <td>{{ $ad['category'][0]['display_name'] }}</td>
+                                        <td>{{ $ad->id }}</td>
+                                        <td>{{ $ad->name }}</td>
+                                        <td>{{ $ad->price }}</td> 
+                                        <td>{{ $ad->category()->first()->display_name }}</td>
+                                        @if (empty($ad->updated_at))
+                                            <td><b class="text-primary">NEW</b></td>
+                                        @else
+                                            <td><b class="text-secondary">Republish</b></td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

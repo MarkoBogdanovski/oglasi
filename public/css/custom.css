@@ -169,6 +169,10 @@ form.was-validated select:valid ~ .select2-container--bootstrap4 .select2-select
   max-width: 20rem;
 }
 
+#ads .card .card-img-top{
+  width: 20rem;
+}
+
 .breadcrumb-item a:hover {
   text-decoration: none;
 }

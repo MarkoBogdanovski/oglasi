@@ -18,32 +18,24 @@
                         <div class="toast-header">
                             <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect width="100%" height="100%" fill="#38c172"></rect></svg>
                             <strong class="mr-auto">Success</strong>
-                            
                             <button type="button" class="ml-5 mb-1 close" data-dismiss="toast" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-
-                        <div class="toast-body">
-                            {!! session('success') !!}
-                        </div>
+                        <div class="toast-body"> {!! session('success') !!} </div>
                     </div>
                 </div>
             @elseif (session('error'))
                 <div aria-live="assertive" aria-atomic="true" style="position: relative; z-index: 100; width: 100%;">
                     <div class="toast ml-auto mr-auto mb-4"  role="alert"  data-delay="5000">
                         <div class="toast-header">
-                          <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect width="100%" height="100%" fill="#e3342f"></rect></svg>
-                          <strong class="mr-auto">Error</strong>
-                          
-                          <button type="button" class="ml-5 mb-1 close" data-dismiss="toast" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
+                            <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect width="100%" height="100%" fill="#e3342f"></rect></svg>
+                            <strong class="mr-auto">Error</strong>
+                            <button type="button" class="ml-5 mb-1 close" data-dismiss="toast" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-
-                        <div class="toast-body">
-                           {{ session('error') }}
-                        </div>
+                        <div class="toast-body"> {{ session('error') }} </div>
                     </div>
                 </div>
             @endif

@@ -14,7 +14,7 @@
           results: $.map(data, function(category) {
             return {
               text: category.display_name,
-              id: category.id
+              id: category.name
             };
           })
         };
@@ -35,9 +35,7 @@
       },
       dataType: "html",
       success: function(response) {
-        $("#ads")
-          .empty()
-          .html(response);
+        $("#ads").empty().html(response);
       }
     });
   });

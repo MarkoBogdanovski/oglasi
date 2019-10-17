@@ -34,7 +34,7 @@ class HomeController extends Controller
         if(!empty($request->get('category'))) {
             $ads = Ads::with(['category', 'owner'])->where([
                 ['name', 'LIKE', '%'.$request->get('q').'%'],
-                ['category', $request->get('category')],
+                ['category', Category::where('name', $request->get('category'))->first()->id],
                 ['approved', true]
             ])->latest('created_at')->paginate(9);
 
@@ -68,8 +68,7 @@ class HomeController extends Controller
     {   
         $ad = [];
         $ad = Ads::with(['category', 'owner'])->where([
-            ['id', $id],
-            ['approved', true]
+            ['id', $id]
         ])->first();
 
         return view('ad')->with([

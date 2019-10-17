@@ -17,12 +17,12 @@ class Controller extends BaseController
      	*/
    	protected $audiId;
 
-   	protected function setAudiId() {
-   		$category = Category::where('name', 'audi')->first();
-
-
-	        if($category !== NULL && $this->audiId != $category->id){
-	            $this->audiId = $category->id;
-	        }
+   	protected function setAudiId() 
+    {
+   	    $categoryId = Category::where('name', 'audi')->first()->id;
+        
+	    if($categoryId !== NULL && $this->audiId != $categoryId){
+	       $this->audiId = $categoryId;
+	    }
 	}
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Ads;
+use App\Models\Category;
 use Storage;
 use Validator;
 
@@ -20,7 +21,7 @@ class AdsController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|string|max:255',
-            'category' => 'required|integer|max:255',
+            'category' => 'required|string|max:255',
             'year' => 'required|digits:4|integer|min:1900|max:'.(date('Y')),
             'range' => 'required|integer',
             'price' => 'required|integer',
@@ -55,9 +56,8 @@ class AdsController extends Controller
 
         if(!empty($list) && $list == "all") {
             $onHold = Ads::with(['category', 'owner'])->where([
-                ['approved', false],
-                ['updated_at', null],
-            ])->latest('created_at')->get();
+                ['approved', false]
+            ])->latest('created_at')->orderBy('updated_at')->get();
 
             return view('ads', compact('onHold', 'list'));
         } else {
@@ -66,7 +66,7 @@ class AdsController extends Controller
                 ['updated_at', null],
             ])->latest('created_at')->take(4)->get();
 
-            $approved = Ads::with(['category', 'owner'])->where('approved', true)->get()->toArray();
+            $approved = Ads::with(['category', 'owner'])->where('approved', true)->orderBy('created_at')->get();
 
             return view('ads', compact('onHold', 'approved', 'list'));
         }
@@ -103,8 +103,9 @@ class AdsController extends Controller
             return redirect()->back()->with('error', $validator->messages()->first());
         }
 
-        if($request->get('category') == $this->audiId) {
-            return redirect()->back()->with('error', 'Category with limited access!');
+        $categoryId = Category::where('name', $request->get('category'))->first()->id;
+        if($categoryId === $this->audiId) {
+            return redirect()->back()->with('error', 'Restricted access!');
         }
 
         $path = $this->uploadImage($request);
@@ -117,7 +118,7 @@ class AdsController extends Controller
                 'owner_id' => Auth::user()->id, 
                 'approved' => FALSE,
                 'name' => $request->get('name'),
-                'category' => $request->get('category'),
+                'category' => $categoryId,
                 'price' => $request->get('price'),
                 'year' => $request->get('year'),
                 'range' => $request->get('range'),
