@@ -2,45 +2,63 @@
 
 @section('content')
 <div class="container">
-        @if (session('status'))
-            <div aria-live="assertive" aria-atomic="true" style="position: relative; z-index: 100;">
-                <div class="toast"  role="alert"  data-delay="10000" style="position: absolute; top: 0; right: 40%;">
-                    <div class="toast-header">
-                      <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
-                      <strong class="mr-auto">{{ session('status')[0] }}</strong>
-                      &nbsp;&nbsp;&nbsp;
-                      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="toast-body">
-                       {{ session('status')[1] }}
+            @if (session('success'))
+                <div aria-live="assertive" aria-atomic="true" style="position: relative; z-index: 100; width: 100%;">
+                    <div class="toast ml-auto mr-auto mb-4"  role="alert"  data-delay="5000">
+                        <div class="toast-header">
+                            <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect width="100%" height="100%" fill="#38c172"></rect></svg>
+                            <strong class="mr-auto">Success</strong>
+                            
+                            <button type="button" class="ml-5 mb-1 close" data-dismiss="toast" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="toast-body">
+                            {!! session('success') !!}
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endif
+            @elseif (session('error'))
+                <div aria-live="assertive" aria-atomic="true" style="position: relative; z-index: 100; width: 100%;">
+                    <div class="toast ml-auto mr-auto mb-4"  role="alert"  data-delay="5000">
+                        <div class="toast-header">
+                          <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect width="100%" height="100%" fill="#e3342f"></rect></svg>
+                          <strong class="mr-auto">Error</strong>
+                          
+                          <button type="button" class="ml-5 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+
+                        <div class="toast-body">
+                           {{ session('error') }}
+                        </div>
+                    </div>
+                </div>
+            @endif
 
     @if(!isset($list) && empty($list) && ($list != "all"))
         <div class="d-flex">
             @foreach($onHold as $ad)
-            <div class="flex-fill">
-              <div class="card m-2 shadow-sm">
-                <div class="card-img-top" style="max-height: 15rem; position: relative;overflow: hidden;">
-                  <img src="{{ $ad['image'] }}" class="img-fluid"/>
-                </div>
-                <div class="card-body">
-                <h5 class="card-title">{{$ad['price']}}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">{{$ad['category'][0]['display_name']}}</h6>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <a  href="/ad/{{$ad['id']}}/approve" class="btn btn-sm btn-outline-success">Approve</a>
-                      <a  href="/ad/{{$ad['id']}}/ignore" class="btn btn-sm btn-outline-danger">Ignore</a>
+                <div class="flex-fill">
+                    <div class="card m-2 shadow-sm">
+                        <div class="card-img-top" style="max-height: 15rem; position: relative;overflow: hidden;">
+                            <img src="{{ $ad['image'] }}" class="img-fluid"/>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{$ad['price']}}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{$ad['category'][0]['display_name']}}</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a  href="/ad/{{$ad['id']}}/1" class="btn btn-sm btn-outline-success">Approve</a>
+                                    <a  href="/ad/{{$ad['id']}}/0" class="btn btn-sm btn-outline-danger">Ignore</a>
+                                </div>
+                                <small class="text-muted"><td>{{  strftime("%d %b %Y",strtotime($ad['created_at'])) }}</td></small>
+                            </div>
+                        </div>
                     </div>
-                    <small class="text-muted"><td>{{  strftime("%d %b %Y",strtotime($ad['created_at'])) }}</td></small>
-                  </div>
                 </div>
-              </div>
-            </div>
             @endforeach
         </div>
         <br/>
@@ -50,7 +68,7 @@
         <br/>
         @if(isset($approved) && !empty($approved))
             <div class="container-fluid mt-5">
-              <div class="card p-4">
+              <div class="card p-4 shadow-sm">
                 <div id="toolbar">
                     <div class="btn-group">
                         <button type="button" id="approve"  class="btn btn-sm btn-success">
@@ -78,7 +96,18 @@
                               data-pagination="true"
                               data-search="true"
                               data-response-handler="responseHandler">
-                              <thead>
+                    <thead>
+                      <tr>
+                          <th rowspan="2"></th>
+                          <th rowspan="2">Id</th>
+                          <th colspan="4">Details</th>
+                        </tr>
+                        <tr>
+                          <th>Name</th>
+                          <th>Price</th>
+                          <th>Category</th>
+                          <th>Action</th>
+                        </tr>
                     </thead>
                     <tbody>
                        @foreach($approved as $ad)
@@ -88,6 +117,7 @@
                             <td>{{ $ad['name']}}</td>
                             <td>{{ $ad['price'] }}</td> 
                             <td>{{ $ad['category'][0]['display_name'] }}</td>
+                          </tr>
                       @endforeach
                     </tbody>
                   </table>
@@ -103,7 +133,7 @@
               </ol>
             </nav>
 
-          <div class="card p-4  shadow">
+          <div class="card p-4  shadow-sm">
             <div id="toolbar">
                 <div class="btn-group">
                         <button type="button" id="approve" class="btn btn-success shadow-sm">
@@ -131,8 +161,19 @@
                           data-pagination="true"
                           data-search="true"
                           data-response-handler="responseHandler">
-                          <thead>
-                </thead>
+                    <thead>
+                      <tr>
+                          <th rowspan="2"></th>
+                          <th rowspan="2">Id</th>
+                          <th colspan="4">Details</th>
+                        </tr>
+                        <tr>
+                          <th>Name</th>
+                          <th>Price</th>
+                          <th>Category</th>
+                          <th>Action</th>
+                        </tr>
+                    </thead>
                 <tbody>
                    @foreach($onHold as $ad)
                       <tr>
@@ -284,22 +325,21 @@
 
           $remove.click(function () {
             var ids = getIdSelections()
-            $table.bootstrapTable('remove', {
-              field: 'id',
-              values: ids
-            })
-
             $.ajax({
                 url: '/ads/handle',
                 type: 'post',
-                data: {
+                data: JSON.stringify({
                     "_token": "{{ csrf_token() }}",
                     ids: ids,
                     status: false
-                },
-                dataType: 'JSON',
+                }),
+                dataType: 'json',
+                contentType: 'application/json',
                 success: function(response){
-                    
+                  $table.bootstrapTable('remove', {
+                    field: 'id',
+                    values: ids
+                  })
                 }
             });
 
@@ -311,12 +351,13 @@
             $.ajax({
                 url: '/ads/handle',
                 type: 'post',
-                data: {
+                data: JSON.stringify ({
                     "_token": "{{ csrf_token() }}",
                     ids: ids,
                     status: true
-                },
-                dataType: 'JSON',
+                }),
+                dataType: 'json',
+                contentType: 'application/json',
                 success: function(response){
                     $table.bootstrapTable('remove', {
                       field: 'id',

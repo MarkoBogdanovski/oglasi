@@ -5,18 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Ads;
-use App\Models\Category;
 use Storage;
 use Validator;
-use Session;
 
 class AdsController extends Controller
 { 
-    /**
-     *  Disabled category
-     */
-    private $disabledCategory = 1;
-
    /**
      * Get a validator for an incoming registration request.
      *
@@ -28,7 +21,7 @@ class AdsController extends Controller
         return Validator::make($data, [
             'name' => 'required|string|max:255',
             'category' => 'required|integer|max:255',
-            'year' => 'required|integer',
+            'year' => 'required|digits:4|integer|min:1900|max:'.(date('Y')),
             'range' => 'required|integer',
             'price' => 'required|integer',
         ]);
@@ -41,11 +34,11 @@ class AdsController extends Controller
      */
     public function __construct()
     {
-        $category = Category::where('name', 'audi')->first()->pluck('id');
-        if($this->disabledCategory != $category[0]){
-            $this->disabledCategory = $category;
-        }
-        
+        /**
+         *  Set Audi Category ID
+        */
+        parent::setAudiId();
+
         $this->middleware('auth');
     }
 
@@ -60,17 +53,15 @@ class AdsController extends Controller
             return redirect('home');
         }
 
-        if(isset($list) && !empty($list) && $list == "all") {
-            $onHold = Ads::with(['category', 'owner'])
-            ->where([
+        if(!empty($list) && $list == "all") {
+            $onHold = Ads::with(['category', 'owner'])->where([
                 ['approved', false],
                 ['updated_at', null],
             ])->latest('created_at')->get()->toArray();
 
             return view('ads', compact('onHold', 'list'));
         } else {
-            $onHold = Ads::with(['category', 'owner'])
-            ->where([
+            $onHold = Ads::with(['category', 'owner'])->where([
                 ['approved', false],
                 ['updated_at', null],
             ])->latest('created_at')->take(4)->get()->toArray();
@@ -112,8 +103,8 @@ class AdsController extends Controller
             return redirect()->back()->with('error', $validator->messages()->first());
         }
 
-        if($request->get('category') == $this->disabledCategory) {
-            return  redirect('ad')->with('error', 'This category is restricted!');
+        if($request->get('category') == $this->audiId) {
+            return redirect()->back()->with('error', 'Category with limited access!');
         }
 
         $path = $this->uploadImage($request);
@@ -134,9 +125,9 @@ class AdsController extends Controller
                 'created_at' => now()
             ]);
 
-            return redirect('ad')->with('success', "Ad has been successfully crated on the <a class='alert-link' target='_blank' href='{$id}/{$request->get('name')}'>link</a>.");
+           return redirect()->back()->with('success', "Ad has been successfully crated on the <a class='alert-link' target='_blank' href='{$id}/{$request->get('name')}'>link</a>.");
         } catch (\Exception $e){
-            return redirect('ad')->with('error', $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -146,54 +137,26 @@ class AdsController extends Controller
      * @param  \App\Ads  $ads
      * @return \Illuminate\Http\Response
      */
-    public function update($id, $status)
+    public function update(Request $request, $ids = null, $status = null)
     {
+        $ids = !empty($request->get('ids')) ? $request->get('ids') : [$ids];
+        $status = !empty($request->get('status')) ? $request->get('status') : (boolean) $status;
+
         if(Auth::user()->role_id != 1) { 
             return redirect('home');
         }
 
-        if($status == 'approve') {
-            $status = true;
-        } else if($status == 'ignore') {
-            $status = false;
-        } else {
-            return redirect('ads')->with('status', ['Error', 'Invalid argument!']);
+        try {
+            $ads  = Ads::whereIn('id', $ids)->update(['approved' => $status, 'updated_at' => now()]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', "Unexpected error.");
         }
 
-        $ad = Ads::find($id);
-        $ad->approved = $status;
-        $ad->updated_at = now();
-        $ad->save();
-
-        return redirect('ads')->with('status', ['Success','Ad has been handled.']);
-    }
-
- /**
-     * Update the specified resource.
-     *
-     * @param  \App\Ads  $ads
-     * @return \Illuminate\Http\Response
-     */
-    public function handle(Request $request)
-    {
-        if(Auth::user()->role_id != 1) { 
-            return redirect('home');
+        if($request->ajax()){
+            return response()->json(['success' => 'Ad has been processed.']);
         }
 
-        $ids = $request->get('ids');
-        $status = $request->get('status');
-
-        if($status == true) {
-            $status = true;
-            $ads = Ads::whereIn('id', $ids)->update(['approved' => $status, 'updated_at' => now()]);
-        } else if($status == false) {
-            $status = false;
-            $ads = Ads::whereIn('id', $ids)->update(['approved' => $status, 'updated_at' => now()]);
-        } else {
-            return response()->json(['Invalid argument!']);
-        }
-
-        return response()->json(['Ad has been handled.']);
+        return redirect()->back()->with('success', 'Ad has been processed.');
     }
 
     private function uploadImage(Request $request) {

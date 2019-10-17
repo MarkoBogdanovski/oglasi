@@ -24,12 +24,11 @@ Route::get('{id}/{name}', 'HomeController@show')->where(['id' => '[0-9]+']);
 Auth::routes(['register' => false]);
 
 Route::get('ads/{list?}','AdsController@index');
-Route::post('ads/handle','AdsController@handle');
+Route::post('ads/handle','AdsController@update');
 
-Route::get('ad/{id}/{status}','AdsController@update');
 Route::get('ad','AdsController@create');
 Route::post('ad','AdsController@store');
-Route::delete('ad','AdsController@destroy');
+Route::get('ad/{ids}/{status}','AdsController@update');
 
 Route::get('categories','HomeController@listCategories');
 Route::get('category','CategoryController@create')->name('category');

@@ -13,14 +13,14 @@ class AdsTableSeeder extends Seeder
      */
     public function run()
     {
-        $categories = Category::all()->pluck('id');
-        foreach($categories as $key => $value) {
+        $categories = Category::all();
+        foreach($categories as $category) {
+            if($category->name == 'audi') { continue; } 
             factory(Ads::class, 50)->create([
-                'category' => $value
+                'category' => $category->id
             ])->each(function ($ad) {
                 return true;
             });
         }
-        
     }
 }
