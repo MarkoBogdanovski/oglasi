@@ -3,11 +3,13 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use App\Models\Ads;
+use App\Models\User;
+use App\Models\Roles;
 use Faker\Generator as Faker;
 
 $factory->define(Ads::class, function (Faker $faker, $params) {
     return [
-    	'owner_id' => 1,
+    	'owner_id' => User::where('role_id', Roles::where('name', 'member')->first()->id)->inRandomOrder()->take(1)->first()->id,
     	'approved' => $faker->boolean(75),
     	'category' => $params['category'],
     	'name' => $faker->catchPhrase,

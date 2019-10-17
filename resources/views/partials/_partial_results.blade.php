@@ -1,8 +1,6 @@
             @foreach($ads as $ad)
               <div class="card m-2 shadow-sm mb-5" style="max-width: 20rem;">
-                <div class="card-img-top" style="max-height: 15rem; position: relative;overflow: hidden;">
-                  <img src="{{ $ad['image'] }}" class="img-fluid"/>
-                </div>
+                <div class="card-img-top" style="height: 15rem; background-size: cover; background-position: center; background-image: url('{{ $ad->image }}')"></div>
                 <div class="card-body">
                 <h5 class="card-title">{{$ad['name']}}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">${{$ad['price']}}</h6>

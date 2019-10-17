@@ -3,13 +3,15 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/ads"><i class="fas fa-arrow-left"></i> &nbsp;Go Back</a></li>
-              </ol>
-        </nav>
+        <div class="col-md-2">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/home"><i class="fas fa-arrow-left"></i> &nbsp;&nbsp;Go Back</a></li>
+                </ol>
+            </nav>
+        </div>
 
-        <div class="col-md-8">
+        <div class="col-md-10">
             @if (session('success'))
                 <div aria-live="assertive" aria-atomic="true" style="position: relative; z-index: 100; width: 100%;">
                     <div class="toast ml-auto mr-auto mb-4"  role="alert"  data-delay="5000">

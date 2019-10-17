@@ -36,13 +36,13 @@ class HomeController extends Controller
                 ['name', 'LIKE', '%'.$request->get('q').'%'],
                 ['category', $request->get('category')],
                 ['approved', true]
-            ])->latest()->paginate(9);
+            ])->latest('created_at')->paginate(9);
 
         } else {
             $ads = Ads::with(['category', 'owner'])->where([
                 ['name', 'LIKE', '%'.$request->get('q').'%'],
                 ['approved', true]
-            ])->latest()->paginate(9);
+            ])->latest('created_at')->paginate(9);
         }
 
         if ($request->ajax()) {

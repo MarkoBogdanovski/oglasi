@@ -16,7 +16,7 @@ class AdsTableSeeder extends Seeder
         $categories = Category::all();
         foreach($categories as $category) {
             if($category->name == 'audi') { continue; } 
-            factory(Ads::class, 50)->create([
+            factory(Ads::class, 15)->create([
                 'category' => $category->id
             ])->each(function ($ad) {
                 return true;

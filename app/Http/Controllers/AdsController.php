@@ -57,14 +57,14 @@ class AdsController extends Controller
             $onHold = Ads::with(['category', 'owner'])->where([
                 ['approved', false],
                 ['updated_at', null],
-            ])->latest('created_at')->get()->toArray();
+            ])->latest('created_at')->get();
 
             return view('ads', compact('onHold', 'list'));
         } else {
             $onHold = Ads::with(['category', 'owner'])->where([
                 ['approved', false],
                 ['updated_at', null],
-            ])->latest('created_at')->take(4)->get()->toArray();
+            ])->latest('created_at')->take(4)->get();
 
             $approved = Ads::with(['category', 'owner'])->where('approved', true)->get()->toArray();
 
@@ -125,7 +125,7 @@ class AdsController extends Controller
                 'created_at' => now()
             ]);
 
-           return redirect()->back()->with('success', "Ad has been successfully crated on the <a class='alert-link' target='_blank' href='{$id}/{$request->get('name')}'>link</a>.");
+           return redirect()->back()->with('success', "Ad has been sent on the review. It will be available on this <a class='alert-link' target='_blank' href='{$id}/{$request->get('name')}'>address</a>.");
         } catch (\Exception $e){
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -159,19 +159,39 @@ class AdsController extends Controller
         return redirect()->back()->with('success', 'Ad has been processed.');
     }
 
+    /**
+     *  Handle image upload
+     *  @param \Illuminate\Http\Request $request
+     *  @return string $path
+     */
     private function uploadImage(Request $request) {
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-  
+        $validator = $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1000000000',
+        ]); 
+
         try {
-            $imageName = time().'.'.$request->image->extension();  
+            $imageName = $this->uniqString().'.'.$request->image->extension();  
             $request->image->move(storage_path('app/public/cars'), $imageName);
             $path = Storage::url('cars/'.$imageName); 
 
             return $path;
         } catch (\Exception $e) {
-            return redirect()->back()->with('error',  'Error while uploading image');
+            return false;
         }
+    }
+
+    /**
+     * Generate random string
+     *  @return string $filename
+     */
+    private function uniqString() { 
+        $string = uniqid('img_'); 
+        $filename = 
+            substr($string,0,8) . '-' . 
+            substr($string,8,4) . '-' . 
+            substr($string,12,4). '-' . 
+            substr($string,16,4). '-' . 
+            substr($string,20); 
+        return $filename;
     }
 }

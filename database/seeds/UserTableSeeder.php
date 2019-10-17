@@ -16,15 +16,20 @@ class UserTableSeeder extends Seeder
             'id'=> 1,
             'name' => 'Admin',
             'email' => 'admin@admin.com',
-            'password' => bcrypt('password'),
+            'password' => bcrypt('admin'),
             'role_id' => 1
         ]);
+
         $user = User::create([
-	       'id'=> 2,
+	        'id'=> 2,
             'name' => 'Demo',
             'email' => 'demo@demo.com',
             'password' => bcrypt('demo'),
             'role_id' => 2	
         ]);
+
+        factory(User::class, 20)->create()->each(function ($user) {
+            return true;
+        });
     }
 }
