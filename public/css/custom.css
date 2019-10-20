@@ -180,3 +180,7 @@ form.was-validated select:valid ~ .select2-container--bootstrap4 .select2-select
 .toast {
   max-width: 500px;
 }
+
+#loadExternal {
+  transition: all .4s cubic-bezier(.4, 0, .2, 1) 0ms;
+}

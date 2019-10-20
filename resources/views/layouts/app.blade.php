@@ -34,7 +34,7 @@
 
                 <form class="form-inline" method="GET" action='{{ url("search") }}'>
                     <div class="input-group ml-5">
-                        <input type="text" aria-label="Search"  id="search" placeholder="Search" name="q" class="form-control" style="width: 20rem" required />
+                        <input type="text" aria-label="Search"  id="search" placeholder="Search" name="q" class="form-control" style="width: 20rem" />
                         <div class="input-group-append" style="width: 15rem">
                             <select class="custom-select"  id="categorySearch" name="category" data-allow-clear="1"></select>
                         </div>
@@ -99,5 +99,24 @@
     
     @yield('js')
     <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        $("#categorySearch").on("change", function() {
+            var q = $("#search").val();
+            var category = $("#categorySearch").val();
+            $.ajax({
+              url: "/search",
+              type: "post",
+              data: {
+                _token: "{!! csrf_token() !!}",
+                category: category,
+                q: q
+              },
+              dataType: "html",
+              success: function(response) {
+                $("#ads").empty().html(response);
+              }
+            });
+        });
+    </script>
 </body>
 </html>

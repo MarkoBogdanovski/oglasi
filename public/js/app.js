@@ -22,21 +22,4 @@
       cache: true
     }
   });
-  $("#categorySearch").on("change", function() {
-    var q = $("#search").val();
-    var category = $("#categorySearch").val();
-    $.ajax({
-      url: "/search",
-      type: "post",
-      data: {
-        _token: "{{ csrf_token() }}",
-        category: category,
-        q: q
-      },
-      dataType: "html",
-      success: function(response) {
-        $("#ads").empty().html(response);
-      }
-    });
-  });
 })();

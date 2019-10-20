@@ -33,3 +33,5 @@ Route::get('ad/{ids}/{status}','AdsController@update');
 Route::get('categories','HomeController@listCategories');
 Route::get('category','CategoryController@create')->name('category');
 Route::post('category','CategoryController@store');
+
+Route::post('loadExternal','CategoryController@loadExternal');

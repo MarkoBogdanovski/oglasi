@@ -22,7 +22,7 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+     * Show the application search.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -30,11 +30,12 @@ class HomeController extends Controller
     {
         $ads = [];
         $category = !empty($request->get('category')) ? $request->get('category') : null;
+        $q = !empty($request->get('q')) ? "%".$request->get('q')."%" : '%';
 
         if(!empty($request->get('category'))) {
             $ads = Ads::with(['category', 'owner'])->where([
-                ['name', 'LIKE', '%'.$request->get('q').'%'],
-                ['category', Category::where('name', $request->get('category'))->first()->id],
+                ['name', 'LIKE', $q],
+                ['category', Category::where('name', $category)->first()->id],
                 ['approved', true]
             ])->latest('created_at')->paginate(9);
 

@@ -30,7 +30,7 @@
             dataType: 'json',
             contentType: 'application/json',
             data: JSON.stringify({
-                "_token": "{{ csrf_token() }}",
+                "_token": "{!! csrf_token() !!}",
                 ids: ids,
                 status: status
             }),
@@ -112,6 +112,36 @@
     }
 
     $(function() {
+        $("#loadExternal").on("click", function(){
+            $(this).attr('disabled', true);
+            $("#loadExternal i.fa-cloud-download-alt").toggleClass('d-none');
+            $("#loadExternal span").toggleClass('d-none');
+            $("#loadExternal small").html('Fetching data...');
+
+            $.ajax({
+                url: '/loadExternal',
+                type: 'post',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    "_token": "{{ csrf_token() }}"
+                }),
+                success: function(response){
+                    $("#loadExternal").addClass('btn-success');
+                    $("#loadExternal small").html('Success');
+                    $("#loadExternal i.fa-check-circle").toggleClass('d-none');
+                        $("#loadExternal span").toggleClass('d-none');
+                    
+                    setTimeout(function(){
+                        $("#loadExternal").attr('disabled', false);
+                        $("#loadExternal").removeClass('btn-success');
+                        $("#loadExternal small").html('Load External');
+                        $("#loadExternal i").toggleClass('d-none');
+                    }, 2000);
+                }
+            });
+        });
+
         initTable();        
     })
 </script>
@@ -161,6 +191,19 @@
                         </div>
                     </div>
                 @endif
+
+                <div class="float-right mr-2 mb-4">
+                    <button class="btn btn-primary btn-lg float-right" type="button" id="loadExternal">
+                      <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                      <i class="fas fa-check-circle d-none"></i>
+                      <i class="fas fa-cloud-download-alt"></i>
+                      &nbsp;
+                      <small>Load External</small>
+                    </button>
+                </div>
+
+                <div class="clearfix"></div>
+
                 <div class="d-flex">
                     @foreach($onHold as $ad)
                         <div class="flex-fill ml-2 mr-2">
